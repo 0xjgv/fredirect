@@ -1,4 +1,4 @@
-import { userAgent } from "./configs";
+import { userAgent } from "../../lib/configs";
 import puppeteer from 'puppeteer';
 import { URL } from "url";
 
