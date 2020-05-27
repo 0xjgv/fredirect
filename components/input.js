@@ -66,8 +66,8 @@ export default () => {
     </div>
     <div className={utilStyles.Redirects}>
       {redirects && (
-        redirects.map((url, i) =>
-          <div key={i}><span>{i+1}.</span> <a href={url}>{url}</a></div>
+        redirects.map(({ url, status }, i) =>
+          <div key={i}><span>{i+1}.</span><a href={url}>{url}</a><span>{status}</span></div>
         )
       )}
     </div>
