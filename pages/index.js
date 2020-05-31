@@ -10,7 +10,7 @@ export default function Home() {
         <title>{siteTitle}</title>
       </Head>
       <section className={utilStyles.headingMd}>
-        <h3>Check URLs redirections</h3>
+        <h3>Follow URLs redirects</h3>
       </section>
       <section className={utilStyles.Input}>
         <Input />

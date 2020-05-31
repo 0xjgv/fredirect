@@ -1,0 +1,13 @@
+{
+  "version": 2,
+  "routes": [
+    {
+      "src": "/.*",
+      "headers": {
+        "Server": "Mr Robot",
+        "Cache-Control": "max-age: 600"
+      },
+      "continue": true
+    }
+  ]
+}

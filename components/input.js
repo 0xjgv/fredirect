@@ -2,26 +2,40 @@ import utilStyles from '../styles/utils.module.css'
 import React, { useState } from 'react'
 import axios from 'axios'
 
+const initialState = {
+  submitted: false,
+  submitting: false,
+  info: { error: false, message: "" }
+};
+
 export default () => {
+  const [status, setStatus] = useState(initialState);
   const [redirects, setRedirects] = useState([])
-  const [status, setStatus] = useState({
-    submitted: false,
-    submitting: false,
-    info: { error: false, msg: null }
-  })
   const [url, setUrl] = useState("")
+
+  const handleError = (error) => {
+    const { data: message } = error.response;
+    setStatus({
+      info: { error: true, message }
+    });
+    setUrl("")
+    setTimeout(() => {
+      setStatus({
+        info: { error: false, message: "" }
+      })
+    }, 3000);
+  }
 
   const handleResponse = (res) => {
     const { redirects, error } = res.data;
     if (error) {
-      setStatus({
-        info: { error: true, msg: error.message }
-      })
+      handleError(error);
+      setUrl("")
     } else {
       setStatus({
         submitted: true,
         submitting: false,
-        info: { error: false, msg: ""}
+        info: { error: false, message: ""}
       })
       setRedirects(redirects)
       setUrl("")
@@ -33,11 +47,7 @@ export default () => {
     setStatus(prevStatus => ({ ...prevStatus, submitting: true }))
     axios.get('api/fredirect', { params: { url } })
       .then(handleResponse)
-      .catch(error => {
-        setStatus({
-          info: { error: true, msg: error.message }
-        })
-      })
+      .catch(handleError)
   }
   const handleOnChange = e => {
     const { value } = e.target
@@ -60,16 +70,16 @@ export default () => {
     </form>
     <div className={utilStyles.Error}>
       {status.info.error && (
-        <div className="error">Error: {status.info.msg}</div>
+        <div className="error"><strong>Error:</strong> {status.info.message}</div>
       )}
-      {!status.info.error && status.info.msg && <p>{status.info.msg}</p>}
+      {!status.info.error && status.info.msg && <p>{status.info.message}</p>}
     </div>
-    <div className={utilStyles.Redirects}>
-      {redirects && (
-        redirects.map(({ url, status }, i) =>
+    {redirects.length > 0 && (
+      <div className={utilStyles.Redirects}>
+        {redirects.map(({ url, status }, i) =>
           <div key={i}><span>{i+1}.</span><a href={url}>{url}</a><span>{status}</span></div>
-        )
-      )}
-    </div>
+        )}
+      </div>
+    )}
   </>
 }

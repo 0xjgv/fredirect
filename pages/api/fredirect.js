@@ -2,7 +2,7 @@ import { userAgent } from "../../lib/configs";
 import fetch from 'node-fetch';
 
 const metaRefreshPattern = '(CONTENT|content)=["\']0;[ ]*(URL|url)=(.*?)(["\']\s*>)';
-const MAX_REDIRECT_DEPTH = 10;
+const MAX_REDIRECT_DEPTH = 20;
 
 const fetchOptions = {
   redirect: 'manual',
@@ -34,9 +34,9 @@ const visit = async uri => {
 }
 
 const startFollowing = async url => {
-  let keepGoing = true
-  const visits = []
-  let count = 1
+  let keepGoing = true;
+  const visits = [];
+  let count = 1;
   while (keepGoing) {
     if (count > MAX_REDIRECT_DEPTH) {
       throw `Exceeded max redirect depth of ${MAX_REDIRECT_DEPTH}`
@@ -48,14 +48,14 @@ const startFollowing = async url => {
       visits.push(response);
       count++;
     } catch (err) {
-      visits.push({ url: url, redirect: false, status: `Error: ${err}` })
+      visits.push({ url, redirect: false, status: `Error: ${err}` })
       break
     }
   }
   return visits;
 }
 
-const isRedirect = status => status > 300 && status < 309;
+const isRedirect = status => status >= 300 && status <= 309;
 
 const extractMetaRefreshUrl = html => {
   const match = html.match(metaRefreshPattern)
@@ -66,11 +66,13 @@ const prefixWithHttp = url => !/^http/.test(url) ? `http://${url}` : url;
 
 export default async (req, res) => {
   try {
-    const { url } = req.query;
-    const redirects = await startFollowing(url);
+    const { href } = new URL(req.query.url);
+    const redirects = await startFollowing(href);
     return res.status(200).json({ redirects })
   } catch (error) {
-    console.log(error);
-    return res.status(400).json({ error });
+    if (error.code === "ERR_INVALID_URL") {
+      return res.status(400).send("Invalid URL");
+    }
+    return res.status(400).send(error);
   }
 }

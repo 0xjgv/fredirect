@@ -54,7 +54,7 @@
 
 .Redirects {
   margin-top: 15px;
-  border: 1px solid #cdd9ed;
+  border: 1px solid #ddd;
   color: #99a3ba;
   border-radius: 6px;
   font-size: 15px;
@@ -96,7 +96,7 @@
   border-radius: 6px;
   -webkit-appearance: none;
   color: #99a3ba;
-  border: 1px solid #cdd9ed;
+  border: 1px solid #ddd;
   background: #fff;
   -webkit-transition: border 0.3s ease;
   transition: border 0.3s ease;
@@ -167,11 +167,12 @@
   padding: 8px 12px;
   font-size: 14px;
   line-height: 25px;
-  color: #99a3ba;
-  background: #eef4ff;
+  color: #222;
+  background: rgb(248, 248, 248);
   border: #cdd9ed;
   -webkit-transition: background 0.3s ease, border 0.3s ease, color 0.3s ease;
   transition: background 0.3s ease, border 0.3s ease, color 0.3s ease;
+  cursor: default;
 }
 .form > span:last-child {
   cursor: pointer;
@@ -180,4 +181,16 @@
   color: #275efe;
   background: #678efe;
   border-color: #275efe;
+}
+.form span[type="submit"]:hover{
+  background: #ddd;
+}
+
+.Error {
+  background: #ddd;
+  margin-top: 10px;
+}
+
+.Error > * {
+  padding: 5px;
 }

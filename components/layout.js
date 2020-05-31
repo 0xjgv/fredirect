@@ -1,10 +1,10 @@
-import Head from 'next/head'
+import utilStyles from '../styles/utils.module.css'
 import styles from './layout.module.css'
-// import utilStyles from '../styles/utils.module.css'
+import Head from 'next/head'
 import Link from 'next/link'
 
-const name = 'URL Redirects'
-export const siteTitle = 'Check for URL redirects'
+export const siteTitle = 'Fredirect | Follow URLs redirects.'
+const name = 'Fredirect'
 
 export default function Layout({ children, home }) {
   return (
@@ -13,7 +13,7 @@ export default function Layout({ children, home }) {
         <link rel="icon" href="/favicon.ico" />
         <meta
           name="description"
-          content="Security tool to check redirections."
+          content="Security tool to check URLs redirects."
         />
         <meta
           property="og:image"
@@ -25,33 +25,7 @@ export default function Layout({ children, home }) {
         <meta name="twitter:card" content="summary_large_image" />
       </Head>
       <header className={styles.header}>
-        {/* {home ? (
-          <>
-            <img
-              src="/images/profile.jpg"
-              className={`${styles.headerHomeImage} ${utilStyles.borderCircle}`}
-              alt={name}
-            />
-            <h1 className={utilStyles.heading2Xl}>{name}</h1>
-          </>
-        ) : (
-          <>
-            <Link href="/">
-              <a>
-                <img
-                  src="/images/profile.jpg"
-                  className={`${styles.headerImage} ${utilStyles.borderCircle}`}
-                  alt={name}
-                />
-              </a>
-            </Link>
-            <h2 className={utilStyles.headingLg}>
-              <Link href="/">
-                <a className={utilStyles.colorInherit}>{name}</a>
-              </Link>
-            </h2>
-          </>
-        )} */}
+        <h1 className={utilStyles.heading2Xl}>{name}</h1>
       </header>
       <main>{children}</main>
       {!home && (
