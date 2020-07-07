@@ -1,5 +1,6 @@
 import { userAgent } from "../../lib/configs";
 import fetch from 'node-fetch';
+import dns from 'dns';
 
 const metaRefreshPattern = '(CONTENT|content)=["\']0;[ ]*(URL|url)=(.*?)(["\']\s*>)';
 const MAX_REDIRECT_DEPTH = 20;
@@ -33,7 +34,17 @@ const visit = async uri => {
   return { url, redirect: false, status }
 }
 
-const startFollowing = async url => {
+const getHostIP = async (host) => new Promise((resolve, reject) => {
+  dns.lookup(host, (err, address, family) => {
+    if (err) {
+      return reject(err);
+    }
+    return resolve({ address, type: family });
+  });
+});
+
+const startFollowing = async (urlObject) => {
+  let { href: url, host } = urlObject;
   let keepGoing = true;
   const visits = [];
   let count = 1;
@@ -42,10 +53,14 @@ const startFollowing = async url => {
       throw `Exceeded max redirect depth of ${MAX_REDIRECT_DEPTH}`
     }
     try {
-      const response = await visit(url)
+      const [response, ipInfo] = await Promise.all([
+        visit(url),
+        getHostIP(host)
+      ]);
       keepGoing = response.redirect;
       url = response.redirectUrl;
-      visits.push(response);
+      url && ({ host } = new URL(url));
+      visits.push({ ...response, ipInfo });
       count++;
     } catch (err) {
       visits.push({ url, redirect: false, status: `Error: ${err}` })
@@ -66,8 +81,8 @@ const prefixWithHttp = url => !/^http/.test(url) ? `http://${url}` : url;
 
 export default async (req, res) => {
   try {
-    const { href } = new URL(req.query.url);
-    const redirects = await startFollowing(href);
+    const url = new URL(req.query.url);
+    const redirects = await startFollowing(url);
     return res.status(200).json({ redirects })
   } catch (error) {
     if (error.code === "ERR_INVALID_URL") {
