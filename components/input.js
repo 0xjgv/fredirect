@@ -54,6 +54,18 @@ export default () => {
     setUrl(value);
   }
 
+  const handleClick = ev => {
+    ev.preventDefault();
+    const { href } = ev.target;
+    document.addEventListener('copy', (e) => {
+      e.clipboardData.setData('text/plain', href);
+      e.preventDefault();
+    }, true);
+    document.execCommand('copy');
+    console.log('copied text : ', href);
+    alert('copied text: ' + href);
+  }
+
   return <>
     <form className={utilStyles.form} onSubmit={handleOnSubmit}>
       <span>URL</span>
@@ -76,9 +88,14 @@ export default () => {
     </div>
     {redirects.length > 0 && (
       <div className={utilStyles.Redirects}>
-        {redirects.map(({ url, status }, i) =>
-          <div key={i}><span>{i+1}.</span><a href={url}>{url}</a><span>{status}</span></div>
-        )}
+        {redirects.map(({ url, status, ipInfo: { address } }, i) => {
+          return <div key={i}>
+            <span><b>{i+1}</b>.</span>
+            <a onClick={handleClick} href={url}>{url}</a>
+            <span><b>IP:</b> {address}</span>
+            <span><b>Status:</b> {status}</span>
+          </div>
+        })}
       </div>
     )}
   </>

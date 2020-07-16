@@ -70,20 +70,25 @@
 .Redirects > * {
   justify-content: center;
   align-items: center;
+  flex-wrap: wrap;
   display: flex;
 }
 
 .Redirects span {
+  background-color: white !important;
   padding: 5px;
-  min-width: 30px;
   flex: 1;
 }
 .Redirects a {
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
-  flex: 10 320px;
   padding: 5px;
+  flex: 5;
+}
+
+.Redirects > * span:first-child {
+  max-width: 45px;
 }
 
 .form {
