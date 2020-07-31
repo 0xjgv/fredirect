@@ -5,6 +5,15 @@ import dns from 'dns';
 const metaRefreshPattern = '(CONTENT|content)=["\']0;[ ]*(URL|url)=(.*?)(["\']\s*>)';
 const MAX_REDIRECT_DEPTH = 20;
 
+const isRedirect = status => status >= 300 && status <= 309;
+
+const extractMetaRefreshUrl = html => {
+  const match = html.match(metaRefreshPattern)
+  return match && match.length == 5 ? match[3] : null;
+}
+
+const prefixWithHttp = url => !/^http/.test(url) ? `http://${url}` : url;
+
 const fetchOptions = {
   redirect: 'manual',
   follow: 0,
@@ -63,25 +72,21 @@ const startFollowing = async (urlObject) => {
       visits.push({ ...response, ipInfo });
       count++;
     } catch (err) {
-      visits.push({ url, redirect: false, status: `Error: ${err}` })
+      if (err.code === 'ENOTFOUND') {
+        visits.push({ url, redirect: false, status: "Address not found." });
+      } else {
+        visits.push({ url, redirect: false, status: err.toString() });
+      }
+      console.error(err);
       break
     }
   }
   return visits;
 }
 
-const isRedirect = status => status >= 300 && status <= 309;
-
-const extractMetaRefreshUrl = html => {
-  const match = html.match(metaRefreshPattern)
-  return match && match.length == 5 ? match[3] : null;
-}
-
-const prefixWithHttp = url => !/^http/.test(url) ? `http://${url}` : url;
-
 export default async (req, res) => {
   try {
-    const url = new URL(req.query.url);
+    const url = new URL(prefixWithHttp(req.query.url));
     const redirects = await startFollowing(url);
     return res.status(200).json({ redirects })
   } catch (error) {

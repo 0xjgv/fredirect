@@ -88,7 +88,8 @@ export default () => {
     </div>
     {redirects.length > 0 && (
       <div className={utilStyles.Redirects}>
-        {redirects.map(({ url, status, ipInfo: { address } }, i) => {
+        {redirects.map(({ url, status, ipInfo }, i) => {
+          const { address } = ipInfo || { address: "0.0.0.0" };
           return <div key={i}>
             <span><b>{i+1}</b>.</span>
             <a onClick={handleClick} href={url}>{url}</a>
