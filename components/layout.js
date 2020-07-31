@@ -35,7 +35,11 @@ export default function Layout({ children, home }) {
           </Link>
         </div>
       )}
-      <footer></footer>
+      <footer>
+        <div>
+          <p>Created with ❤️ + 💻 + <a href="https://vercel.com">Vercel</a>. jgv ψ {new Date().getFullYear()}</p>
+        </div>
+      </footer>
     </div>
   )
 }

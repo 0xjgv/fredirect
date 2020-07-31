@@ -37,3 +37,15 @@ img {
   max-width: 100%;
   display: block;
 }
+
+footer {
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  padding: 30px;
+}
+
+footer p {
+  color: #999;
+  font-size: 15px;
+}
