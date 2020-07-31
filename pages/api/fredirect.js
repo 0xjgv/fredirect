@@ -1,6 +1,6 @@
 import { userAgent } from "../../lib/configs";
 import fetch from 'node-fetch';
-import dns from 'dns';
+import { promises as dns } from 'dns';
 
 const metaRefreshPattern = '(CONTENT|content)=["\']0;[ ]*(URL|url)=(.*?)(["\']\s*>)';
 const MAX_REDIRECT_DEPTH = 20;
@@ -43,14 +43,34 @@ const visit = async uri => {
   return { url, redirect: false, status }
 }
 
-const getHostIP = async (host) => new Promise((resolve, reject) => {
-  dns.lookup(host, (err, address, family) => {
-    if (err) {
-      return reject(err);
+const getDNSRecords = async (host) => {
+  const records = new Set(["mx", "txt", "soa", "ns", "lookup"]);
+
+  const functions = Object.keys(dns).reduce((acc, key) => {
+    const fn = key.toLowerCase();
+    for (let record of records) {
+      if (fn.endsWith(record)) {
+        records.delete(record);
+        acc.push([key, record]);
+      }
     }
-    return resolve({ address, type: family });
-  });
-});
+    return acc;
+  }, []);
+
+  const results = await Promise.all(functions
+    .map(([fnName, recordName])  => dns[fnName](host)
+      .then(v => [recordName, v])
+      .catch(() => [])
+    )
+  );
+
+  return results.reduce((acc, [record, values]) => {
+    if (record && values) {
+      acc[record] = values;
+    }
+    return acc;
+  }, { host });
+};
 
 const startFollowing = async (urlObject) => {
   let { href: url, host } = urlObject;
@@ -62,14 +82,14 @@ const startFollowing = async (urlObject) => {
       throw `Exceeded max redirect depth of ${MAX_REDIRECT_DEPTH}`
     }
     try {
-      const [response, ipInfo] = await Promise.all([
+      const [response, dnsRecords] = await Promise.all([
         visit(url),
-        getHostIP(host)
+        getDNSRecords(host)
       ]);
       keepGoing = response.redirect;
       url = response.redirectUrl;
       url && ({ host } = new URL(url));
-      visits.push({ ...response, ipInfo });
+      visits.push({ ...response, dnsRecords });
       count++;
     } catch (err) {
       if (err.code === 'ENOTFOUND') {

@@ -88,12 +88,20 @@ export default () => {
     </div>
     {redirects.length > 0 && (
       <div className={utilStyles.Redirects}>
-        {redirects.map(({ url, status, ipInfo }, i) => {
-          const { address } = ipInfo || { address: "0.0.0.0" };
+        {redirects.map(({ url, status, dnsRecords }, i) => {
+          if (dnsRecords) {
+            const { lookup } = dnsRecords;
+            return <div key={i}>
+              <span><b>{i+1}</b>.</span>
+              <a onClick={handleClick} href={url}>{url}</a>
+              <span><b>IP:</b> {lookup.address}</span>
+              <span><b>Status:</b> {status}</span>
+            </div>
+          }
           return <div key={i}>
             <span><b>{i+1}</b>.</span>
             <a onClick={handleClick} href={url}>{url}</a>
-            <span><b>IP:</b> {address}</span>
+            <span><b>IP:</b> 0.0.0.0</span>
             <span><b>Status:</b> {status}</span>
           </div>
         })}
