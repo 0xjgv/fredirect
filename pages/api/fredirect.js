@@ -66,10 +66,14 @@ const getDNSRecords = async (host) => {
 
   return results.reduce((acc, [record, values]) => {
     if (record && values) {
-      acc[record] = values;
+      if (Array.isArray(values)) {
+        acc[record] = [].concat(...values);
+      } else {
+        acc[record] = values;
+      }
     }
     return acc;
-  }, { host });
+  }, {});
 };
 
 const startFollowing = async (urlObject) => {
