@@ -44,10 +44,9 @@ const visit = async uri => {
 }
 
 const getDNSRecords = async (host) => {
-  const records = new Set(["mx", "txt", "soa", "ns", "lookup"]);
-
+  const records = new Set(["MX", "TXT", "SOA", "NS", "LOOKUP"]);
   const functions = Object.keys(dns).reduce((acc, key) => {
-    const fn = key.toLowerCase();
+    const fn = key.toUpperCase();
     for (let record of records) {
       if (fn.endsWith(record)) {
         records.delete(record);
@@ -56,14 +55,12 @@ const getDNSRecords = async (host) => {
     }
     return acc;
   }, []);
-
   const results = await Promise.all(functions
     .map(([fnName, recordName])  => dns[fnName](host)
       .then(v => [recordName, v])
       .catch(() => [])
     )
   );
-
   return results.reduce((acc, [record, values]) => {
     if (record && values) {
       if (Array.isArray(values)) {
@@ -90,6 +87,9 @@ const startFollowing = async (urlObject) => {
         visit(url),
         getDNSRecords(host)
       ]);
+      if (response.url === response.redirectUrl) {
+        break;
+      }
       keepGoing = response.redirect;
       url = response.redirectUrl;
       url && ({ host } = new URL(url));

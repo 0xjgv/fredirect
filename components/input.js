@@ -90,11 +90,11 @@ export default () => {
       <div className={utilStyles.Redirects}>
         {redirects.map(({ url, status, dnsRecords }, i) => {
           if (dnsRecords) {
-            const { lookup } = dnsRecords;
+            const { LOOKUP } = dnsRecords;
             return <div key={i}>
               <span><b>{i+1}</b>.</span>
               <a onClick={handleClick} href={url}>{url}</a>
-              <span><b>IP:</b> {lookup.address}</span>
+              <span><b>IP:</b> {LOOKUP.address}</span>
               <span><b>Status:</b> {status}</span>
             </div>
           }
