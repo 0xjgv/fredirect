@@ -28,6 +28,7 @@ export default () => {
 
   const handleResponse = (res) => {
     const { redirects, error } = res.data;
+    const { urls } = redirects;
     if (error) {
       handleError(error);
       setUrl("")
@@ -37,7 +38,7 @@ export default () => {
         submitting: false,
         info: { error: false, message: ""}
       })
-      setRedirects(redirects)
+      setRedirects(urls)
       setUrl("")
     }
   }
@@ -88,13 +89,12 @@ export default () => {
     </div>
     {redirects.length > 0 && (
       <div className={utilStyles.Redirects}>
-        {redirects.map(({ url, status, dnsRecords }, i) => {
-          if (dnsRecords) {
-            const { LOOKUP } = dnsRecords;
+        {redirects.map(({ url, status, ip }, i) => {
+          if (ip) {
             return <div key={i}>
               <span><b>{i+1}</b>.</span>
               <a onClick={handleClick} href={url}>{url}</a>
-              <span><b>IP:</b> {LOOKUP.address}</span>
+              <span><b>IP:</b> {ip}</span>
               <span><b>Status:</b> {status}</span>
             </div>
           }

@@ -1,6 +1,7 @@
 import { userAgent } from "../../lib/configs";
-import fetch from 'node-fetch';
-import { promises as dns } from 'dns';
+import { promises as dns } from "dns";
+import fetch from "node-fetch";
+import crypto from "crypto";
 
 const metaRefreshPattern = '(CONTENT|content)=["\']0;[ ]*(URL|url)=(.*?)(["\']\s*>)';
 const MAX_REDIRECT_DEPTH = 20;
@@ -73,10 +74,34 @@ const getDNSRecords = async (host) => {
   }, {});
 };
 
+const hashify = (object) => {
+  const stack = Object.values(object);
+  const values = [];
+
+  while (stack.length) {
+    const value = stack.pop();
+    if (Array.isArray(value)) {
+      value.forEach(val => stack.push(val));
+    } else if (value && typeof value === "object") {
+      Object.values(value).forEach(val => stack.push(val));
+    } else {
+      values.push(value);
+    }
+  }
+
+  return crypto
+    .createHash("md5")
+    .update(values.sort().join(""))
+    .digest("hex");
+};
+
 const startFollowing = async (urlObject) => {
   let { href: url, host } = urlObject;
   let keepGoing = true;
-  const visits = [];
+  const records = {};
+  const memo = {};
+  const urls = [];
+
   let count = 1;
   while (keepGoing) {
     if (count > MAX_REDIRECT_DEPTH) {
@@ -87,31 +112,40 @@ const startFollowing = async (urlObject) => {
         visit(url),
         getDNSRecords(host)
       ]);
+
+      const hash = hashify(dnsRecords);
+      if (!memo[hash]) {
+        records[host] = dnsRecords;
+        memo[hash] = 1;
+      }
       if (response.url === response.redirectUrl) {
         break;
       }
+
       keepGoing = response.redirect;
       url = response.redirectUrl;
       url && ({ host } = new URL(url));
-      visits.push({ ...response, dnsRecords });
+      urls.push({ ...response, ip: dnsRecords.LOOKUP.address });
       count++;
     } catch (err) {
       if (err.code === 'ENOTFOUND') {
-        visits.push({ url, redirect: false, status: "Address not found." });
+        urls.push({ url, redirect: false, status: "Address not found." });
       } else {
-        visits.push({ url, redirect: false, status: err.toString() });
+        urls.push({ url, redirect: false, status: err.toString() });
       }
       console.error(err);
       break
     }
   }
-  return visits;
+  console.log(JSON.stringify(records, null, 2));
+  return { urls, records };
 }
 
 export default async (req, res) => {
   try {
     const url = new URL(prefixWithHttp(req.query.url));
     const redirects = await startFollowing(url);
+    console.log(redirects)
     return res.status(200).json({ redirects })
   } catch (error) {
     if (error.code === "ERR_INVALID_URL") {
