@@ -8,7 +8,7 @@ const initialState = {
   info: { error: false, message: "" }
 };
 
-export default () => {
+const Input = () => {
   const [status, setStatus] = useState(initialState);
   const [redirects, setRedirects] = useState([])
   const [url, setUrl] = useState("")
@@ -109,3 +109,5 @@ export default () => {
     )}
   </>
 }
+
+export default Input;

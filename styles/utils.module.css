@@ -53,6 +53,7 @@
 }
 
 .Redirects {
+  min-width: 320px;
   margin-top: 15px;
   border: 1px solid #ddd;
   color: #99a3ba;

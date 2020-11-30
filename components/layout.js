@@ -1,5 +1,4 @@
 import utilStyles from '../styles/utils.module.css'
-import styles from './layout.module.css'
 import Head from 'next/head'
 import Link from 'next/link'
 
@@ -8,7 +7,7 @@ const name = 'Fredirect'
 
 export default function Layout({ children, home }) {
   return (
-    <div className={styles.container}>
+    <div>
       <Head>
         <link rel="icon" href="/favicon.ico" />
         <meta
@@ -24,7 +23,7 @@ export default function Layout({ children, home }) {
         <meta name="og:title" content={siteTitle} />
         <meta name="twitter:card" content="summary_large_image" />
       </Head>
-      <header className={styles.header}>
+      <header>
         <h1 className={utilStyles.heading2Xl}>{name}</h1>
       </header>
       <main>{children}</main>

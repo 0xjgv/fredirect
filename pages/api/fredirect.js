@@ -137,7 +137,6 @@ const startFollowing = async (urlObject) => {
       break
     }
   }
-  console.log(JSON.stringify(records, null, 2));
   return { urls, records };
 }
 
@@ -145,7 +144,6 @@ export default async (req, res) => {
   try {
     const url = new URL(prefixWithHttp(req.query.url));
     const redirects = await startFollowing(url);
-    console.log(redirects)
     return res.status(200).json({ redirects })
   } catch (error) {
     if (error.code === "ERR_INVALID_URL") {
