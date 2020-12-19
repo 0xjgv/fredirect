@@ -1,11 +1,11 @@
-import utilStyles from '../styles/utils.module.css'
-import Head from 'next/head'
-import Link from 'next/link'
+import utilStyles from '../styles/utils.module.css';
+import Head from 'next/head';
+import Link from 'next/link';
 
-export const siteTitle = 'Fredirect | Follow URLs redirects.'
-const name = 'Fredirect'
+export const siteTitle = 'Fredirect | Follow URLs redirects.';
+const name = 'Fredirect';
 
-export default function Layout({ children, home }) {
+export default function Layout ({children, home}) {
   return (
     <div>
       <Head>
@@ -36,9 +36,9 @@ export default function Layout({ children, home }) {
       )}
       <footer>
         <div>
-          <p>Created with ❤️ + 💻 + <a href="https://vercel.com">Vercel</a>. jgv ψ {new Date().getFullYear()}</p>
+          <p>Created with ❤️ + 💻 + <a href="https://vercel.com">Vercel</a>. <a href="https://www.linkedin.com/in/juansgaitan/">jgv</a> ψ {new Date().getFullYear()}</p>
         </div>
       </footer>
     </div>
-  )
+  );
 }
