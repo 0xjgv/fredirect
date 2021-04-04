@@ -141,6 +141,8 @@ const startFollowing = async (urlObject) => {
 };
 
 export default async (req, res) => {
+  res.setHeader('Access-Control-Allow-Credentials', true);
+  res.setHeader('Access-Control-Allow-Origin', '*');
   try {
     const url = new URL(prefixWithHttp(req.query.url));
     const redirects = await startFollowing(url);
