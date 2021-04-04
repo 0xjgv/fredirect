@@ -46,7 +46,7 @@ const Input = () => {
   const handleOnSubmit = e => {
     e.preventDefault();
     setStatus(prevStatus => ({...prevStatus, submitting: true}));
-    axios.get('api/fredirect', {params: {url}})
+    axios.get('api/fredirect', {params: {url}, headers: {origin: "self"}})
       .then(handleResponse)
       .catch(handleError);
   };

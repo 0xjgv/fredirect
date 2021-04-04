@@ -97,6 +97,7 @@ const hashify = (object) => {
 
 const startFollowing = async (urlObject) => {
   let {href: url, host} = urlObject;
+  let previousURL = urlObject;
   let keepGoing = true;
   const records = {};
   const memo = {};
@@ -123,8 +124,11 @@ const startFollowing = async (urlObject) => {
       }
 
       keepGoing = response.redirect;
-      url = response.redirectUrl;
-      url && ({host} = new URL(url));
+
+      previousURL = new URL(response.redirectUrl, previousURL);
+      host = previousURL.host;
+      url = previousURL.href;
+
       urls.push({...response, ip: dnsRecords.LOOKUP.address});
       count++;
     } catch(err) {
@@ -144,7 +148,7 @@ const allowCors = fn => async (req, res) => {
   res.setHeader('Access-Control-Allow-Credentials', true);
 
   // Echo user's origin
-  res.setHeader('Access-Control-Allow-Origin', req.headers.origin);
+  res.setHeader('Access-Control-Allow-Origin', req.headers.origin || req.headers.referer);
   // Allow all
   // res.setHeader('Access-Control-Allow-Origin', '*');
 
