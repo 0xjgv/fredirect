@@ -36,7 +36,7 @@ export default function Layout ({children, home}) {
       )}
       <footer>
         <div>
-          <p>Created with ❤️ + 💻 + <a href="https://vercel.com">Vercel</a>. <a href="https://www.linkedin.com/in/juansgaitan/">jgv</a> ψ {new Date().getFullYear()}</p>
+          <p>Created with ❤️ + <a href="https://vercel.com">vercel</a> + ☕. <a href="https://github.com/juangaitanv/fredirect">Fredirect</a> ψ {new Date().getFullYear()}</p>
         </div>
       </footer>
     </div>
