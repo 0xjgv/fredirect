@@ -1,12 +1,12 @@
-import utilStyles from '@/styles/utils.module.css';
-import Script from 'next/script';
-import Head from 'next/head';
-import Link from 'next/link';
+import utilStyles from "@/styles/utils.module.css";
+import Script from "next/script";
+import Head from "next/head";
+import Link from "next/link";
 
-export const siteTitle = 'Fredirect | Follow URLs redirects.';
-const name = 'Fredirect';
+export const siteTitle = "Fredirect | Follow URLs redirects.";
+const name = "Fredirect";
 
-export default function Layout ({children, home}) {
+export default function Layout({ children, home }) {
   return (
     <>
       <Head>
@@ -25,7 +25,7 @@ export default function Layout ({children, home}) {
         src="https://www.googletagmanager.com/gtag/js?id=G-155TMH014N"
       />
       <Script
-        id='google-analytics'
+        id="google-analytics"
         strategy="afterInteractive"
         dangerouslySetInnerHTML={{
           __html: `
@@ -33,7 +33,7 @@ export default function Layout ({children, home}) {
               function gtag(){dataLayer.push(arguments);}
               gtag('js', new Date());
               gtag('config', 'G-155TMH014N');
-            `,
+            `
         }}
       />
 
@@ -52,7 +52,11 @@ export default function Layout ({children, home}) {
 
       <footer>
         <div>
-          <p>Created with ❤️ + <a href="https://vercel.com">vercel</a> + ☕. <a href="https://github.com/juangaitanv/fredirect">Fredirect</a> ψ {new Date().getFullYear()}</p>
+          <p>
+            Created with ❤️ + <a href="https://vercel.com">vercel</a> + ☕.{" "}
+            <a href="https://github.com/juan-villamizar/fredirect">Fredirect</a>{" "}
+            | {new Date().getFullYear()}
+          </p>
         </div>
       </footer>
     </>
