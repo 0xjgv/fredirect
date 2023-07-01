@@ -2,6 +2,7 @@ import { userAgent } from "@/lib/configs";
 import { promises as dns } from "dns";
 import fetch from "node-fetch";
 import crypto from "crypto";
+import { passThroughSymbol } from "next/dist/server/web/spec-compliant/fetch-event";
 
 const metaRefreshPattern =
   "(CONTENT|content)=[\"']0;[ ]*(URL|url)=(.*?)([\"']s*>)";
@@ -149,17 +150,21 @@ const startFollowing = async urlObject => {
 };
 
 const allowCors = fn => async (req, res) => {
-  res.setHeader(
-    "Access-Control-Allow-Headers",
-    "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, X-Phisherman"
-  );
-  res.setHeader("Access-Control-Allow-Methods", "OPTIONS,GET");
-  res.setHeader("Access-Control-Allow-Credentials", true);
-  if (req.method === "OPTIONS") {
-    res.status(200).end();
-    return;
+  try {
+    res.setHeader(
+      "Access-Control-Allow-Headers",
+      "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, X-Phisherman"
+    );
+    res.setHeader("Access-Control-Allow-Methods", "OPTIONS,GET");
+    res.setHeader("Access-Control-Allow-Credentials", true);
+    if (req.method === "OPTIONS") {
+      res.status(200).end();
+      return;
+    }
+    return await fn(req, res);
+  } catch (error) {
+    console.error({ error });
   }
-  return await fn(req, res);
 };
 
 const handler = async (req, res) => {
@@ -168,6 +173,7 @@ const handler = async (req, res) => {
     const redirects = await startFollowing(url);
     return res.status(200).json({ redirects });
   } catch (error) {
+    console.error({ error });
     if (error.code === "ERR_INVALID_URL") {
       return res.status(400).send("Invalid URL");
     }
