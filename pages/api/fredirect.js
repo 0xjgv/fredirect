@@ -2,7 +2,6 @@ import { userAgent } from "@/lib/configs";
 import { promises as dns } from "dns";
 import fetch from "node-fetch";
 import crypto from "crypto";
-import { passThroughSymbol } from "next/dist/server/web/spec-compliant/fetch-event";
 
 const metaRefreshPattern =
   "(CONTENT|content)=[\"']0;[ ]*(URL|url)=(.*?)([\"']s*>)";
