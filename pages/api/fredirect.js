@@ -170,6 +170,8 @@ const handler = async (req, res) => {
   try {
     const url = new URL(prefixWithHttp(req.query.url));
     const redirects = await startFollowing(url);
+    // Cache for 1 minute
+    res.setHeader("Cache-Control", "s-maxage=60, stale-while-revalidate");
     return res.status(200).json({ redirects });
   } catch (error) {
     console.error({ error });
