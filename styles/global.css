@@ -31,7 +31,6 @@ body {
 body > div {
   max-width: 900px;
   padding: 15px;
-  flex: 1;
 }
 
 h1,
