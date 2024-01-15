@@ -1,6 +1,5 @@
 import { userAgent } from "@/lib/configs";
 import { promises as dns } from "dns";
-import fetch from "node-fetch";
 import crypto from "crypto";
 
 const metaRefreshPattern =
