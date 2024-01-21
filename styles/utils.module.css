@@ -62,24 +62,25 @@
   overflow: hidden;
 }
 
-.Redirects > * {
+.Redirects>* {
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
 }
 
-.Redirects > * {
+.Redirects>* {
   justify-content: center;
   align-items: center;
   flex-wrap: wrap;
   display: flex;
 }
 
-.Redirects span {
+.Redirects button {
   background-color: white !important;
   padding: 5px;
   flex: 1;
 }
+
 .Redirects a {
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -88,7 +89,7 @@
   flex: 5;
 }
 
-.Redirects > * span:first-child {
+.Redirects>* button:first-child {
   max-width: 45px;
 }
 
@@ -111,18 +112,23 @@
 .form input::-webkit-input-placeholder {
   color: #cbd1dc;
 }
+
 .form input::-moz-placeholder {
   color: #cbd1dc;
 }
+
 .form input:-ms-input-placeholder {
   color: #cbd1dc;
 }
+
 .form input::-ms-input-placeholder {
   color: #cbd1dc;
 }
+
 .form input::placeholder {
   color: #cbd1dc;
 }
+
 .form input:focus {
   outline: none;
   border-color: #275efe;
@@ -135,40 +141,48 @@
   display: flex;
   width: 100%;
 }
-.form > span,
+
+.form>button,
 .form input {
   border: none;
   white-space: nowrap;
   display: block;
 }
-.form > span:not(:first-child):not(:last-child),
+
+.form>button:not(:first-child):not(:last-child),
 .form input:not(:first-child):not(:last-child) {
   border-radius: 0;
 }
-.form > span:first-child,
+
+.form>button:first-child,
 .form input:first-child {
   border-radius: 6px 0 0 6px;
 }
-.form > span:last-child,
+
+.form>button:last-child,
 .form input:last-child {
   border-radius: 0 6px 6px 0;
 }
-.form > span:not(:first-child),
+
+.form>button:not(:first-child),
 .form input:not(:first-child) {
   margin-left: -1px;
 }
+
 .form input {
   font-size: 15px;
   padding: 5px;
   position: relative;
   z-index: 1;
   -webkit-box-flex: 1;
-          flex: 1 1 auto;
+  flex: 1 1 auto;
   width: 1%;
   margin-top: 0;
   margin-bottom: 0;
 }
-.form > span, .Redirects span {
+
+.form>span,
+.Redirects span {
   text-align: center;
   padding: 8px 12px;
   font-size: 14px;
@@ -180,15 +194,18 @@
   transition: background 0.3s ease, border 0.3s ease, color 0.3s ease;
   cursor: default;
 }
-.form > span:last-child {
+
+.form>button:last-child {
   cursor: pointer;
 }
-.form:focus > span {
+
+.form:focus>button {
   color: #275efe;
   background: #678efe;
   border-color: #275efe;
 }
-.form span[type="submit"]:hover{
+
+.form button[type="submit"]:hover {
   background: #ddd;
 }
 
@@ -197,6 +214,6 @@
   margin-top: 10px;
 }
 
-.Error > * {
+.Error>* {
   padding: 5px;
 }
