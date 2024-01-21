@@ -1,6 +1,5 @@
 import utilStyles from "@/styles/utils.module.css";
 import React, { useState } from "react";
-import axios from "axios";
 
 const initialState = {
   submitted: false,
@@ -14,7 +13,7 @@ const Input = () => {
   const [url, setUrl] = useState("");
 
   const handleError = error => {
-    const { data: message } = error.response;
+    const { message } = error;
     setStatus({
       info: { error: true, message }
     });
@@ -27,7 +26,7 @@ const Input = () => {
   };
 
   const handleResponse = res => {
-    const { redirects, error } = res.data;
+    const { redirects, error } = res;
     const { urls } = redirects;
     if (error) {
       handleError(error);
@@ -43,14 +42,24 @@ const Input = () => {
     }
   };
 
-  const handleOnSubmit = e => {
+  const handleOnSubmit = async e => {
     e.preventDefault();
     setStatus(prevStatus => ({ ...prevStatus, submitting: true }));
-    axios
-      .get("api/fredirect", { params: { url }, headers: { origin: "self" } })
-      .then(handleResponse)
-      .catch(handleError);
+    try {
+      const response = await fetch(`api/fredirect?url=${encodeURIComponent(url)}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          origin: "self"
+        }
+      });
+      const data = await response.json();
+      handleResponse(data);
+    } catch (error) {
+      handleError(error);
+    }
   };
+
   const handleOnChange = e => {
     const { value } = e.target;
     setUrl(value);
@@ -83,13 +92,12 @@ const Input = () => {
           required
           value={url}
         />
-        <span
+        <button
           type="submit"
           disabled={status.submitting}
-          onClick={handleOnSubmit}
         >
           {status.submitting ? "Submitting..." : "Submit"}
-        </span>
+        </button>
       </form>
       <div className={utilStyles.Error}>
         {status.info.error && (
