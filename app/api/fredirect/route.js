@@ -3,6 +3,8 @@ import { userAgent } from "@/lib/configs";
 import { promises as dns } from "dns";
 import crypto from "crypto";
 
+export const dynamic = "force-dynamic"; // static by default, unless reading the request
+
 const metaRefreshPattern =
   "(CONTENT|content)=[\"']0;[ ]*(URL|url)=(.*?)([\"']s*>)";
 const MAX_REDIRECT_DEPTH = 20;
