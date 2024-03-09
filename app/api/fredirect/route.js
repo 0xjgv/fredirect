@@ -1,3 +1,4 @@
+import { NextResponse } from "next/server";
 import { userAgent } from "@/lib/configs";
 import { promises as dns } from "dns";
 import crypto from "crypto";
@@ -147,38 +148,21 @@ const startFollowing = async urlObject => {
   return { urls, records };
 };
 
-const allowCors = fn => async (req, res) => {
+export async function GET(request) {
   try {
-    res.setHeader(
-      "Access-Control-Allow-Headers",
-      "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, X-Phisherman"
-    );
-    res.setHeader("Access-Control-Allow-Methods", "OPTIONS,GET");
-    res.setHeader("Access-Control-Allow-Credentials", true);
-    if (req.method === "OPTIONS") {
-      res.status(200).end();
-      return;
+    const { searchParams } = request.nextUrl;
+    const url = searchParams.get("url");
+    if (!url) {
+      return NextResponse("Missing URL", { status: 400 });
     }
-    return await fn(req, res);
-  } catch (error) {
-    console.error({ error });
-  }
-};
 
-const handler = async (req, res) => {
-  try {
-    const url = new URL(prefixWithHttp(req.query.url));
-    const redirects = await startFollowing(url);
-    // Cache for 1 minute
-    res.setHeader("Cache-Control", "s-maxage=60, stale-while-revalidate");
-    return res.status(200).json({ redirects });
+    const redirects = await startFollowing(new URL(prefixWithHttp(url)));
+    return NextResponse.json({ redirects });
   } catch (error) {
     console.error({ error });
     if (error.code === "ERR_INVALID_URL") {
-      return res.status(400).send("Invalid URL");
+      return NextResponse("Invalid URL", { status: 400 });
     }
-    return res.status(400).send(error);
+    return NextResponse(error.toString(), { status: 500 });
   }
-};
-
-export default allowCors(handler);
+}

@@ -2,9 +2,9 @@ import utilStyles from "@/styles/utils.module.css";
 import React, { useState } from "react";
 
 const initialState = {
-  submitted: false,
+  info: { error: false, message: "" },
   submitting: false,
-  info: { error: false, message: "" }
+  submitted: false
 };
 
 const Input = () => {
@@ -33,9 +33,9 @@ const Input = () => {
       setUrl("");
     } else {
       setStatus({
-        submitted: true,
+        info: { error: false, message: "" },
         submitting: false,
-        info: { error: false, message: "" }
+        submitted: true
       });
       setRedirects(urls);
       setUrl("");
@@ -46,13 +46,16 @@ const Input = () => {
     e.preventDefault();
     setStatus(prevStatus => ({ ...prevStatus, submitting: true }));
     try {
-      const response = await fetch(`api/fredirect?url=${encodeURIComponent(url)}`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          origin: "self"
+      const response = await fetch(
+        `api/fredirect?url=${encodeURIComponent(url)}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            origin: "self"
+          }
         }
-      });
+      );
       const data = await response.json();
       handleResponse(data);
     } catch (error) {
@@ -60,9 +63,8 @@ const Input = () => {
     }
   };
 
-  const handleOnChange = e => {
-    const { value } = e.target;
-    setUrl(value);
+  const handleOnChange = ({ target }) => {
+    setUrl(target.value);
   };
 
   const handleClick = ev => {
@@ -92,10 +94,7 @@ const Input = () => {
           required
           value={url}
         />
-        <button
-          type="submit"
-          disabled={status.submitting}
-        >
+        <button type="submit" disabled={status.submitting}>
           {status.submitting ? "Submitting..." : "Submit"}
         </button>
       </form>

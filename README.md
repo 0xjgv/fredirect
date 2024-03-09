@@ -1,8 +1,8 @@
 # Fredirect
 
-Use .nvmrc Node.js version
+Use .nvmrc Node.js version (lts/hydrogen 18.19.1)
 `nvm use`
 
-`npm install`
+`pnpm install`
 
-`npm dev`
+`pnpm dev`
