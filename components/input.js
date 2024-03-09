@@ -1,5 +1,7 @@
+"use client";
+
 import utilStyles from "@/styles/utils.module.css";
-import React, { useState } from "react";
+import { useState } from "react";
 
 const initialState = {
   info: { error: false, message: "" },
