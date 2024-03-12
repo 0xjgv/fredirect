@@ -1,6 +1,17 @@
 "use client";
 
-import utilStyles from "@/styles/utils.module.css";
+import {
+  Badge,
+  Button,
+  Divider,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeaderCell,
+  TableRow,
+  TextInput
+} from "@tremor/react";
 import { useState } from "react";
 
 const initialState = {
@@ -87,66 +98,63 @@ const Input = () => {
 
   return (
     <>
-      <form className={utilStyles.form} onSubmit={handleOnSubmit}>
-        <span>URL</span>
-        <input
-          id="url"
-          type="text"
+      <form onSubmit={handleOnSubmit} className="flex flex-col gap-3">
+        <TextInput
+          placeholder="Enter a URL to follow redirects"
           onChange={handleOnChange}
+          error={status.info.error || status.info.message}
+          errorMessage={status.info.message}
+          id="url"
           required
+          type="url"
           value={url}
         />
-        <button type="submit" disabled={status.submitting}>
+        <Button
+          className="self-end"
+          variant="primary"
+          disabled={status.submitting}
+          loading={status.submitting}
+        >
           {status.submitting ? "Submitting..." : "Submit"}
-        </button>
+        </Button>
       </form>
-      <div className={utilStyles.Error}>
-        {status.info.error && (
-          <div className="error">
-            <strong>Error:</strong> {status.info.message}
-          </div>
-        )}
-        {!status.info.error && status.info.msg && <p>{status.info.message}</p>}
-      </div>
+
       {redirects.length > 0 && (
-        <div className={utilStyles.Redirects}>
-          {redirects.map(({ url, status, ip }, i) => {
-            if (ip) {
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableHeaderCell>#</TableHeaderCell>
+              <TableHeaderCell>URL</TableHeaderCell>
+              <TableHeaderCell className="text-right">
+                IP Address
+              </TableHeaderCell>
+              <TableHeaderCell className="text-right">Status</TableHeaderCell>
+            </TableRow>
+          </TableHead>
+
+          <TableBody>
+            {redirects.map(({ url, status, ip }, i) => {
               return (
-                <div key={i}>
-                  <span>
-                    <b>{i + 1}</b>.
-                  </span>
-                  <a onClick={handleClick} href={url}>
-                    {url}
-                  </a>
-                  <span>
-                    <b>IP:</b> {ip}
-                  </span>
-                  <span>
-                    <b>Status:</b> {status}
-                  </span>
-                </div>
+                <TableRow key={i}>
+                  <TableCell>{i + 1}</TableCell>
+                  <TableCell>
+                    <a onClick={handleClick} href={url}>
+                      {url}
+                    </a>
+                  </TableCell>
+                  <TableCell className="text-right">
+                    {ip ? ip : "0.0.0.0"}
+                  </TableCell>
+                  <TableCell className="text-right">
+                    <Badge color={status === 200 ? "emerald" : "amber"}>
+                      {status}
+                    </Badge>
+                  </TableCell>
+                </TableRow>
               );
-            }
-            return (
-              <div key={i}>
-                <span>
-                  <b>{i + 1}</b>.
-                </span>
-                <a onClick={handleClick} href={url}>
-                  {url}
-                </a>
-                <span>
-                  <b>IP:</b> 0.0.0.0
-                </span>
-                <span>
-                  <b>Status:</b> {status}
-                </span>
-              </div>
-            );
-          })}
-        </div>
+            })}
+          </TableBody>
+        </Table>
       )}
     </>
   );
