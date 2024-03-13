@@ -186,14 +186,10 @@ export async function GET(request: Request) {
     }
 
     const redirects = await startFollowing(new URL(prefixWithHttp(url)));
-    return Response.json(
-      { redirects },
-      {
-        headers: {
-          "Cache-Control": "s-maxage=84600" // 24 hours
-        }
-      }
-    );
+    const response = Response.json({ redirects });
+    // Cache response for 24 hours
+    response.headers.set("Cache-Control", `max-age=0, s-maxage=${revalidate}`);
+    return response;
   } catch (error: any) {
     console.error({ error });
     if (error.code === "ERR_INVALID_URL") {
