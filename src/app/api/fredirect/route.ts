@@ -3,6 +3,7 @@ import { promises as dns } from "dns";
 import crypto from "crypto";
 
 export const dynamic = "force-dynamic"; // static by default, unless reading the request
+export const revalidate = 60 * 60 * 24; // 24 hours
 
 const metaRefreshPattern =
   "(CONTENT|content)=[\"']0;[ ]*(URL|url)=(.*?)([\"']s*>)";
@@ -24,8 +25,6 @@ type VisitResponse = {
   redirect: boolean;
   url: string;
 };
-
-export const revalidate = 60 * 60 * 24; // 24 hours
 
 const fetchOptions: RequestInit = {
   redirect: "manual",
@@ -187,10 +186,7 @@ export async function GET(request: Request) {
     }
 
     const redirects = await startFollowing(new URL(prefixWithHttp(url)));
-    const response = Response.json({ redirects });
-    // Cache response for 24 hours
-    response.headers.set("Cache-Control", "public, max-age=86400");
-    return response;
+    return Response.json({ redirects });
   } catch (error: any) {
     console.error({ error });
     if (error.code === "ERR_INVALID_URL") {
