@@ -1,7 +1,7 @@
 {
   "headers": [
     {
-      "source": "/(.*)",
+      "source": "/fredirect",
       "headers": [
         {
           "key": "Server",
@@ -9,7 +9,7 @@
         },
         {
           "key": "Cache-Control",
-          "value": "max-age: 86400"
+          "value": "s-maxage: 86400"
         }
       ]
     }

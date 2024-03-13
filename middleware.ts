@@ -18,8 +18,6 @@ export function middleware(request: NextRequest) {
   }
 
   const response = NextResponse.next();
-  // Cache response for 24 hours
-  response.headers.set("Cache-Control", "max-age=86400");
   return allowCors(response);
 }
 
