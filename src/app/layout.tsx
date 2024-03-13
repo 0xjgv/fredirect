@@ -27,7 +27,7 @@ export default function RootLayout({
         <main className="flex-grow flex flex-col justify-center p-3">
           {children}
         </main>
-        <footer className="align-end bottom-0 w-full text-center p-5">
+        <footer className="align-end bottom-0 w-full text-center p-6">
           <p>
             Created with ❤️ + <a href="https://vercel.com">vercel</a> + ☕.{" "}
             <a href="https://github.com/0xjgv/fredirect">Fredirect</a> |{" "}

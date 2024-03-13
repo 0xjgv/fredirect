@@ -1,4 +1,3 @@
-import { NextResponse } from "next/server";
 import { userAgent } from "@/lib/configs";
 import { promises as dns } from "dns";
 import crypto from "crypto";
@@ -25,6 +24,8 @@ type VisitResponse = {
   redirect: boolean;
   url: string;
 };
+
+export const revalidate = 60 * 60 * 24; // 24 hours
 
 const fetchOptions: RequestInit = {
   redirect: "manual",
@@ -59,10 +60,6 @@ async function visit(uri: string): Promise<VisitResponse> {
   return { url, redirect: false, status };
 }
 
-async function getMXRecords(host: string) {
-  return dns.resolveMx(host);
-}
-
 interface SoaRecord {
   nsname: string;
   hostmaster: string;
@@ -95,20 +92,17 @@ async function getDNSRecords(host: string): Promise<DNSRecords> {
     dnsFunctions.map(([dnsFunction, recordName]) =>
       dnsFunction(host)
         .then((v: string | string[]) => [recordName, v])
-        .catch(() => [])
+        .catch(() => [recordName, []])
     )
   );
 
-  return results.reduce((acc, [record, values]) => {
-    if (record && values) {
-      if (Array.isArray(values)) {
-        acc[record] = [].concat(...values);
-      } else {
-        acc[record] = values;
-      }
-    }
-    return acc;
-  }, {});
+  return results.reduce(
+    (acc, [record, values]) => ({
+      ...acc,
+      [record]: Array.isArray(values) ? values.flat() : values
+    }),
+    {}
+  );
 }
 
 function hashify(object: { [key: string]: any }): string {
@@ -189,16 +183,19 @@ export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
     const url = searchParams.get("url");
     if (!url) {
-      return new NextResponse("Missing URL", { status: 400 });
+      return new Response("Missing URL", { status: 400 });
     }
 
     const redirects = await startFollowing(new URL(prefixWithHttp(url)));
-    return NextResponse.json({ redirects });
+    const response = Response.json({ redirects });
+    // Cache response for 24 hours
+    response.headers.set("Cache-Control", "public, max-age=86400");
+    return response;
   } catch (error: any) {
     console.error({ error });
     if (error.code === "ERR_INVALID_URL") {
-      return new NextResponse("Invalid URL", { status: 400 });
+      return new Response("Invalid URL", { status: 400 });
     }
-    return new NextResponse(error.toString(), { status: 500 });
+    return new Response(error.toString(), { status: 500 });
   }
 }
