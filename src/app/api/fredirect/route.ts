@@ -110,10 +110,10 @@ function hashify(object: { [key: string]: any }): string {
 
   while (stack.length) {
     const value = stack.pop();
-    if (Array.isArray(value)) {
-      value.forEach(val => stack.push(val));
-    } else if (value && typeof value === "object") {
+    if (value && typeof value === "object") {
       Object.values(value).forEach(val => stack.push(val));
+    } else if (Array.isArray(value)) {
+      value.forEach(val => stack.push(val));
     } else {
       values.push(value);
     }
