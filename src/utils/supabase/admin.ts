@@ -1,5 +1,5 @@
 import { createClient } from "@supabase/supabase-js";
-import type { Database, Tables } from "types_db";
+import type { Database, Tables } from "./types_db";
 
 type Domains = Tables<"domains">;
 type Ips = Tables<"ips">;
@@ -20,10 +20,11 @@ export const upsertRedirects = async ({
 }): Promise<void> => {
   const ipsToUpsert: Ips[] = urls.map(({ ip }: { ip: string }) => ({ ip }));
   const domainsToUpsert: Domains[] = Object.entries(records).map(
-    ([domain, metadata]) => ({
-      metadata,
-      domain
-    })
+    ([domain, metadata]: [string, any]) =>
+      ({
+        metadata,
+        domain
+      } as Domains)
   );
   const ipDomainRelToUpsert = urls.map(
     ({ ip, url }: { ip: string; url: string }) => ({
