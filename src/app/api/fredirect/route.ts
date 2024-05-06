@@ -1,6 +1,7 @@
 import { userAgent } from "@/lib/configs";
 import { promises as dns } from "dns";
 import crypto from "crypto";
+import { upsertRedirects } from "@/utils/supabase/admin";
 
 export const dynamic = "force-dynamic"; // static by default, unless reading the request
 export const revalidate = 60 * 60 * 24; // 24 hours
@@ -187,6 +188,8 @@ export async function GET(request: Request) {
 
     const redirects = await startFollowing(new URL(prefixWithHttp(url)));
     const response = Response.json({ redirects });
+    await upsertRedirects(redirects);
+
     // Cache response for 24 hours
     response.headers.set("Cache-Control", `max-age=0, s-maxage=${revalidate}`);
     return response;
