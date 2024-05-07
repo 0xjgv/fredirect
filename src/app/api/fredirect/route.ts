@@ -8,7 +8,7 @@ export const revalidate = 60 * 60 * 24; // 24 hours
 
 const metaRefreshPattern =
   "(CONTENT|content)=[\"']0;[ ]*(URL|url)=(.*?)([\"']s*>)";
-const MAX_REDIRECT_DEPTH = 20;
+const MAX_REDIRECT_DEPTH = 30;
 
 const isRedirect = (status: number) => status >= 300 && status <= 309;
 
@@ -123,6 +123,15 @@ function hashify(object: { [key: string]: any }): string {
   return crypto.createHash("md5").update(values.sort().join("")).digest("hex");
 }
 
+const shouldStopRedirection = (
+  lastUrl: VisitResponse,
+  response: VisitResponse
+): boolean =>
+  response.url === response.redirectUrl ||
+  (lastUrl &&
+    lastUrl.redirectUrl === response.redirectUrl &&
+    lastUrl.url === response.url);
+
 async function startFollowing(
   urlObject: URL
 ): Promise<{ urls: any[]; records: any }> {
@@ -150,7 +159,9 @@ async function startFollowing(
         records[host] = dnsRecords;
         memo[hash] = 1;
       }
-      if (response.url === response.redirectUrl) {
+
+      const lastUrl = urls[urls.length - 1];
+      if (shouldStopRedirection(lastUrl, response)) {
         break;
       }
 
@@ -165,6 +176,10 @@ async function startFollowing(
         ip: (dnsRecords.LOOKUP as LookupRecord).address
       });
       count += 1;
+
+      if (response.status === 200 || response.status === "200 + META REFRESH") {
+        break;
+      }
     } catch (err: any) {
       if (err.code === "ENOTFOUND") {
         urls.push({ url, redirect: false, status: "Address not found." });

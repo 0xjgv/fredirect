@@ -18,14 +18,20 @@ export const upsertRedirects = async ({
   records: any;
   urls: any;
 }): Promise<void> => {
-  const ipsToUpsert: Ips[] = urls.map(({ ip }: { ip: string }) => ({ ip }));
-  const domainsToUpsert: Domains[] = Object.entries(records).map(
-    ([domain, metadata]: [string, any]) =>
-      ({
-        metadata,
-        domain
-      } as Domains)
+  const metadataByDomain: Record<string, any> = Object.entries(records).reduce(
+    (acc: Record<string, any>, [domain, metadata]) => {
+      return { ...acc, [domain]: metadata };
+    },
+    {}
   );
+  const domainsToUpsert: Domains[] = Object.entries(metadataByDomain).map(
+    ([domain, metadata]: [string, any]) => ({ metadata, domain } as Domains)
+  );
+
+  const ipsToUpsert: Ips[] = [
+    ...new Set(urls.map(({ ip }: { ip: string }) => ip))
+  ].map(ip => ({ ip } as Ips));
+
   const ipDomainRelToUpsert = urls.map(
     ({ ip, url }: { ip: string; url: string }) => ({
       domain: new URL(url).hostname,
@@ -42,22 +48,4 @@ export const upsertRedirects = async ({
     .upsert(ipDomainRelToUpsert);
 
   console.log({ domainsData, ipsData, ipDomainRelData });
-};
-
-export const upsertDomain = async (
-  host: string,
-  metadata: any
-): Promise<void> => {
-  const domainData = {
-    domain: host,
-    metadata
-  };
-  const { error: upsertError } = await supabaseAdmin
-    .from("domains")
-    .upsert(domainData);
-
-  if (upsertError)
-    throw new Error(`Product insert/update failed: ${upsertError.message}`);
-
-  console.log(`Product inserted/updated: ${domainData.domain}`);
 };
