@@ -31,51 +31,43 @@ const TableResults = ({ redirects }: { redirects: Redirect[] }) => {
   };
 
   return (
-    <>
-      {redirects.length > 0 && (
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableHeaderCell>#</TableHeaderCell>
-              <TableHeaderCell>URL</TableHeaderCell>
-              <TableHeaderCell className="text-right">
-                IP Address
-              </TableHeaderCell>
-              <TableHeaderCell className="text-right">Status</TableHeaderCell>
-            </TableRow>
-          </TableHead>
+    <Table>
+      <TableHead>
+        <TableRow>
+          <TableHeaderCell>#</TableHeaderCell>
+          <TableHeaderCell>URL</TableHeaderCell>
+          <TableHeaderCell className="text-right">IP Address</TableHeaderCell>
+          <TableHeaderCell className="text-right">Status</TableHeaderCell>
+        </TableRow>
+      </TableHead>
 
-          <TableBody>
-            {redirects.map(({ url, status: statusCode, ip }, i) => {
-              return (
-                <TableRow key={i}>
-                  <TableCell>{i + 1}</TableCell>
-                  <TableCell>
-                    <a onClick={handleClick} href={url}>
-                      {url}
-                    </a>
-                  </TableCell>
-                  <TableCell className="text-right">
-                    {ip ? ip : "0.0.0.0"}
-                  </TableCell>
-                  <TableCell className="text-right">
-                    <Badge
-                      color={
-                        String(statusCode).startsWith("200")
-                          ? "emerald"
-                          : "amber"
-                      }
-                    >
-                      {statusCode}
-                    </Badge>
-                  </TableCell>
-                </TableRow>
-              );
-            })}
-          </TableBody>
-        </Table>
-      )}
-    </>
+      <TableBody>
+        {redirects.map(({ url, status: statusCode, ip }, i) => {
+          return (
+            <TableRow key={i}>
+              <TableCell>{i + 1}</TableCell>
+              <TableCell>
+                <a onClick={handleClick} href={url}>
+                  {url}
+                </a>
+              </TableCell>
+              <TableCell className="text-right">
+                {ip ? ip : "0.0.0.0"}
+              </TableCell>
+              <TableCell className="text-right">
+                <Badge
+                  color={
+                    String(statusCode).startsWith("200") ? "emerald" : "amber"
+                  }
+                >
+                  {statusCode}
+                </Badge>
+              </TableCell>
+            </TableRow>
+          );
+        })}
+      </TableBody>
+    </Table>
   );
 };
 

@@ -20,28 +20,27 @@ const SearchInput = ({
   url
 }: SearchInputProps) => {
   return (
-    <>
-      <form onSubmit={handleOnSubmit} className="flex flex-col gap-3">
-        <TextInput
-          placeholder="Enter a URL to follow redirects"
-          onChange={handleOnChange}
-          error={error}
-          errorMessage={errorMessage}
-          id="url"
-          required
-          type="url"
-          value={url}
-        />
-        <Button
-          className="self-end"
-          variant="primary"
-          disabled={isSubmitting}
-          loading={isSubmitting}
-        >
-          {isSubmitting ? "Submitting..." : "Submit"}
-        </Button>
-      </form>
-    </>
+    <form onSubmit={handleOnSubmit} className="flex flex-wrap gap-3">
+      <TextInput
+        className="flex-1 min-w-64"
+        placeholder="Enter a URL to follow redirects"
+        onChange={handleOnChange}
+        error={error}
+        errorMessage={errorMessage}
+        id="url"
+        required
+        type="url"
+        value={url}
+      />
+      <Button
+        className="self-end"
+        variant="primary"
+        disabled={isSubmitting}
+        loading={isSubmitting}
+      >
+        {isSubmitting ? "Submitting..." : "Submit"}
+      </Button>
+    </form>
   );
 };
 

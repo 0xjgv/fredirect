@@ -88,7 +88,7 @@ export default function Home() {
   };
 
   return (
-    <Card className="mx-auto max-w-xl flex flex-col gap-3">
+    <Card className="mx-auto max-w-6xl flex flex-col gap-3">
       <Metric>
         <b>Fredirect</b>
       </Metric>
