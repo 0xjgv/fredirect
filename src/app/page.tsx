@@ -1,6 +1,7 @@
 "use client";
 
 import { Redirect } from "@/components/Common";
+import { Feedback } from "@/components/Feedback";
 import SearchInput from "@/components/SearchInput";
 import TableResults from "@/components/TableResults";
 import { Card, Metric } from "@tremor/react";
@@ -88,7 +89,7 @@ export default function Home() {
   };
 
   return (
-    <Card className="mx-auto max-w-6xl flex flex-col gap-3">
+    <Card className="mx-auto max-w-6xl flex flex-col gap-3 relative">
       <Metric>
         <b>Fredirect</b>
       </Metric>
@@ -102,6 +103,7 @@ export default function Home() {
         isSubmitting={status.submitting}
       />
       {redirects.length > 0 && <TableResults redirects={redirects} />}
+      <Feedback />
     </Card>
   );
 }

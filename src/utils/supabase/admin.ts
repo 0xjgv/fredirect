@@ -49,3 +49,7 @@ export const upsertRedirects = async ({
 
   console.log({ domainsData, ipsData, ipDomainRelData });
 };
+
+export const submitDBFeedback = async (feedback: any): Promise<void> => {
+  await supabaseAdmin.from("feedback").insert({ feedback });
+};

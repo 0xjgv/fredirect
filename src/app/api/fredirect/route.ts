@@ -193,6 +193,14 @@ async function startFollowing(
   return { urls, records };
 }
 
+const upsertRedirectsWithoutError = async (redirects: any) => {
+  try {
+    await upsertRedirects(redirects);
+  } catch (error) {
+    console.error({ error });
+  }
+};
+
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
@@ -203,7 +211,7 @@ export async function GET(request: Request) {
 
     const redirects = await startFollowing(new URL(prefixWithHttp(url)));
     const response = Response.json({ redirects });
-    await upsertRedirects(redirects);
+    await upsertRedirectsWithoutError(redirects);
 
     // Cache response for 24 hours
     response.headers.set("Cache-Control", `max-age=0, s-maxage=${revalidate}`);
