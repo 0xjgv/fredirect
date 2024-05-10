@@ -1,4 +1,5 @@
 import { userAgent } from "@/lib/configs";
+import { waitUntil } from "@vercel/functions";
 import { promises as dns } from "dns";
 import crypto from "crypto";
 import { upsertRedirects } from "@/utils/supabase/admin";
@@ -211,7 +212,7 @@ export async function GET(request: Request) {
 
     const redirects = await startFollowing(new URL(prefixWithHttp(url)));
     const response = Response.json({ redirects });
-    await upsertRedirectsWithoutError(redirects);
+    waitUntil(upsertRedirectsWithoutError(redirects));
 
     // Cache response for 24 hours
     response.headers.set("Cache-Control", `max-age=0, s-maxage=${revalidate}`);
