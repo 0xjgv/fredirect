@@ -26,6 +26,42 @@ type VisitResponse = {
   status: number | string;
   redirect: boolean;
   url: string;
+  ip?: string;
+};
+
+interface MXRecord {
+  exchange: string;
+  priority: number;
+}
+
+interface SOARecord {
+  hostmaster: string;
+  refresh: number;
+  nsname: string;
+  serial: number;
+  expire: number;
+  minttl: number;
+  retry: number;
+}
+
+interface LookupRecord {
+  address: string;
+  family: number;
+}
+
+type DNSRecords = {
+  LOOKUP: LookupRecord;
+  SOA: SOARecord | [];
+  MX: MXRecord[];
+  TXT: string[];
+  NS: string[];
+};
+
+type HostDNSRecords = Record<string, DNSRecords>;
+
+type RedirectionsResult = {
+  records: HostDNSRecords;
+  urls: VisitResponse[];
 };
 
 const fetchOptions: RequestInit = {
@@ -61,27 +97,8 @@ async function visit(uri: string): Promise<VisitResponse> {
   return { url, redirect: false, status };
 }
 
-interface SoaRecord {
-  nsname: string;
-  hostmaster: string;
-  serial: number;
-  refresh: number;
-  retry: number;
-  expire: number;
-  minttl: number;
-}
-
-interface LookupRecord {
-  address: string;
-  family: number;
-}
-
-type DNSRecordName = "TXT" | "SOA" | "LOOKUP" | "MX" | "NS";
-
-type DNSRecords = Record<DNSRecordName, string[] | LookupRecord | SoaRecord>;
-
 async function getDNSRecords(host: string): Promise<DNSRecords> {
-  const dnsFunctions: [CallableFunction, DNSRecordName][] = [
+  const dnsFunctions: [CallableFunction, keyof DNSRecords][] = [
     [dns.resolveTxt, "TXT"],
     [dns.resolveSoa, "SOA"],
     [dns.lookup, "LOOKUP"],
@@ -133,9 +150,7 @@ const shouldStopRedirection = (
     lastUrl.redirectUrl === response.redirectUrl &&
     lastUrl.url === response.url);
 
-async function startFollowing(
-  urlObject: URL
-): Promise<{ urls: any[]; records: any }> {
+async function startFollowing(urlObject: URL): Promise<RedirectionsResult> {
   const records: { [key: string]: any } = {};
   const memo: { [key: string]: number } = {};
   const urls: any[] = [];
@@ -202,7 +217,7 @@ const upsertRedirectsWithoutError = async (redirects: any) => {
   }
 };
 
-export async function GET(request: Request) {
+export async function GET(request: Request): Promise<Response> {
   try {
     const { searchParams } = new URL(request.url);
     const url = searchParams.get("url");
@@ -210,7 +225,9 @@ export async function GET(request: Request) {
       return new Response("Missing URL", { status: 400 });
     }
 
-    const redirects = await startFollowing(new URL(prefixWithHttp(url)));
+    const redirects: RedirectionsResult = await startFollowing(
+      new URL(prefixWithHttp(url))
+    );
     const response = Response.json({ redirects });
     waitUntil(upsertRedirectsWithoutError(redirects));
 
