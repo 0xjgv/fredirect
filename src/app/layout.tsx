@@ -36,6 +36,7 @@ export default function RootLayout({
         </footer>
       </body>
 
+      <Script src="https://tally.so/widgets/embed.js" strategy="afterInteractive" />
       <Script
         strategy="afterInteractive"
         src="https://www.googletagmanager.com/gtag/js?id=G-155TMH014N"

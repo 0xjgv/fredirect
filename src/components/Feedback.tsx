@@ -24,12 +24,17 @@ export function Feedback() {
   return (
     <>
       <div className="absolute top-0 right-0 m-6">
-        <Button
+        <Button variant="secondary" data-tally-open="meL0Xq" data-tally-emoji-text="👋" data-tally-emoji-animation="wave">
+          Give Feedback
+        </Button>
+
+        {/** Disable Supabase feedback button */}
+        {/* <Button
           variant="secondary"
           onClick={() => setFeedbackState({ ...feedbackState, open: true })}
         >
           Give Feedback
-        </Button>
+        </Button> */}
       </div>
 
       <Dialog
@@ -40,7 +45,7 @@ export function Feedback() {
         <DialogPanel>
           <Metric className="text-left">
             <b>Feedback</b>
-          </Metric>
+            </Metric>
           <form
             onSubmit={async e => {
               e.preventDefault();
