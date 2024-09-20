@@ -1,6 +1,6 @@
 "use client";
 
-import { Redirect } from "@/components/Common";
+import { Redirect } from "@/lib/types";
 import { Feedback } from "@/components/Feedback";
 import SearchInput from "@/components/SearchInput";
 import TableResults from "@/components/TableResults";

@@ -10,25 +10,25 @@
   },
   "dependencies": {
     "@headlessui/react": "^1.7.19",
-    "@headlessui/tailwindcss": "^0.2.0",
+    "@headlessui/tailwindcss": "^0.2.1",
     "@supabase/ssr": "^0.3.0",
-    "@supabase/supabase-js": "^2.43.1",
-    "@tremor/react": "^3.16.2",
-    "@vercel/functions": "^1.0.2",
-    "next": "^14.2.3"
+    "@supabase/supabase-js": "^2.45.4",
+    "@tremor/react": "^3.18.2",
+    "@vercel/functions": "^1.4.1",
+    "next": "^14.2.13"
   },
   "devDependencies": {
-    "@tailwindcss/forms": "^0.5.7",
-    "@types/node": "^20.12.8",
-    "@types/react": "^18.3.1",
+    "@tailwindcss/forms": "^0.5.9",
+    "@types/node": "^20.16.5",
+    "@types/react": "^18.3.8",
     "@types/react-dom": "^18.3.0",
-    "autoprefixer": "^10.4.19",
-    "eslint": "^8.57.0",
-    "eslint-config-next": "^14.2.3",
-    "postcss": "^8.4.38",
-    "supabase": "^1.165.0",
-    "tailwindcss": "^3.4.3",
-    "typescript": "^5.4.5"
+    "autoprefixer": "^10.4.20",
+    "eslint": "^8.57.1",
+    "eslint-config-next": "^14.2.13",
+    "postcss": "^8.4.47",
+    "supabase": "^1.192.5",
+    "tailwindcss": "^3.4.12",
+    "typescript": "^5.6.2"
   },
   "engines": {
     "node": ">=18.19.1",

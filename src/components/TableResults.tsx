@@ -9,7 +9,7 @@ import {
   TableHeaderCell,
   TableRow
 } from "@tremor/react";
-import { Redirect } from "./Common";
+import { Redirect } from "@/lib/types";
 
 const TableResults = ({ redirects }: { redirects: Redirect[] }) => {
   const handleClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
