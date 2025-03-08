@@ -15,7 +15,7 @@
     "@supabase/supabase-js": "^2.45.4",
     "@tremor/react": "^3.18.2",
     "@vercel/functions": "^1.4.1",
-    "next": "^14.2.13"
+    "next": "^14.2.21"
   },
   "devDependencies": {
     "@tailwindcss/forms": "^0.5.9",
