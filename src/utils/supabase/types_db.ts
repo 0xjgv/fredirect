@@ -27,24 +27,6 @@ export type Database = {
         }
         Relationships: []
       }
-      feedback: {
-        Row: {
-          created_at: string
-          feedback: Json
-          id: string
-        }
-        Insert: {
-          created_at?: string
-          feedback: Json
-          id?: string
-        }
-        Update: {
-          created_at?: string
-          feedback?: Json
-          id?: string
-        }
-        Relationships: []
-      }
       ip_domain_rel: {
         Row: {
           created_at: string
@@ -192,4 +174,19 @@ export type Enums<
   ? Database[PublicEnumNameOrOptions["schema"]]["Enums"][EnumName]
   : PublicEnumNameOrOptions extends keyof PublicSchema["Enums"]
     ? PublicSchema["Enums"][PublicEnumNameOrOptions]
+    : never
+
+export type CompositeTypes<
+  PublicCompositeTypeNameOrOptions extends
+    | keyof PublicSchema["CompositeTypes"]
+    | { schema: keyof Database },
+  CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
+    schema: keyof Database
+  }
+    ? keyof Database[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
+    : never = never,
+> = PublicCompositeTypeNameOrOptions extends { schema: keyof Database }
+  ? Database[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"][CompositeTypeName]
+  : PublicCompositeTypeNameOrOptions extends keyof PublicSchema["CompositeTypes"]
+    ? PublicSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
     : never
