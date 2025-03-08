@@ -9,7 +9,12 @@ async function submitFeedback(formData: FormData) {
     return;
   }
 
-  await submitDBFeedback({ feedback, cookies: cookies().getAll() });
+  await submitDBFeedback({
+    feedback: typeof feedback === "string" ? feedback : feedback.toString(),
+    cookies: cookies()
+      .getAll()
+      .map(c => `${c.name}=${c.value}`)
+  });
 }
 
 export { submitFeedback };

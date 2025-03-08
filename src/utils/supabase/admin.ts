@@ -1,8 +1,9 @@
 import { createClient } from "@supabase/supabase-js";
-import type { Database, Tables } from "./types_db";
+import type { Database, Tables, Json } from "./types_db";
 
 type Domains = Tables<"domains">;
 type Ips = Tables<"ips">;
+type Feedback = Tables<"feedback">;
 
 // Note: supabaseAdmin uses the SERVICE_ROLE_KEY which you must only use in a secure server-side context
 // as it has admin privileges and overwrites RLS policies!
@@ -50,6 +51,14 @@ export const upsertRedirects = async ({
   console.log({ domainsData, ipsData, ipDomainRelData });
 };
 
-export const submitDBFeedback = async (feedback: any): Promise<void> => {
-  await supabaseAdmin.from("feedback").insert({ feedback });
+export const submitDBFeedback = async (feedbackData: {
+  feedback: string;
+  cookies: string[];
+}): Promise<void> => {
+  await supabaseAdmin.from("feedback").insert({
+    feedback: {
+      message: feedbackData.feedback,
+      cookies: feedbackData.cookies
+    }
+  });
 };
