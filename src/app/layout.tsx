@@ -1,6 +1,12 @@
 import { Metadata } from "next";
+import { Inter } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
+
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-sans"
+});
 
 export const metadata: Metadata = {
   description: "Follow URL redirects and get DNS records.",
@@ -22,8 +28,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body className="flex flex-col min-h-screen">
+    <html lang="en" suppressHydrationWarning>
+      <body
+        className={`flex flex-col min-h-screen font-sans ${inter.variable}`}
+      >
         <main className="flex-grow flex flex-col justify-center p-3">
           {children}
         </main>
