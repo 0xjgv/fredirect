@@ -233,6 +233,16 @@ export async function GET(request: Request): Promise<Response> {
 
     // Cache response for 24 hours
     response.headers.set("Cache-Control", `max-age=0, s-maxage=${revalidate}`);
+    // CORS headers
+    response.headers.set("Access-Control-Allow-Origin", "*");
+    response.headers.set(
+      "Access-Control-Allow-Methods",
+      "GET, POST, PUT, DELETE, OPTIONS"
+    );
+    response.headers.set(
+      "Access-Control-Allow-Headers",
+      "Content-Type, Authorization"
+    );
     return response;
   } catch (error: any) {
     console.error({ error });

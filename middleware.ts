@@ -1,5 +1,4 @@
 import { type NextRequest, NextResponse } from "next/server";
-import { updateSession } from "@/utils/supabase/middleware";
 
 export async function middleware(request: NextRequest) {
   // Handle CORS preflight request
@@ -18,21 +17,7 @@ export async function middleware(request: NextRequest) {
     return preflight;
   }
 
-  // For all other requests, continue and attach CORS headers
-  // const response = await updateSession(request);
-  const response = NextResponse.next();
-
-  response.headers.set("Access-Control-Allow-Origin", "*");
-  response.headers.set(
-    "Access-Control-Allow-Methods",
-    "GET, POST, PUT, DELETE, OPTIONS"
-  );
-  response.headers.set(
-    "Access-Control-Allow-Headers",
-    "Content-Type, Authorization"
-  );
-
-  return response;
+  return NextResponse.next();
 }
 
 export const config = {
