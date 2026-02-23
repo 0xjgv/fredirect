@@ -1,6 +1,7 @@
 "use client";
 
-import { Button, TextInput } from "@tremor/react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 type SearchInputProps = {
   handleOnChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
@@ -21,22 +22,23 @@ const SearchInput = ({
 }: SearchInputProps) => {
   return (
     <form onSubmit={handleOnSubmit} className="flex flex-wrap gap-3">
-      <TextInput
-        className="flex-1 min-w-64"
-        placeholder="Enter a URL to follow redirects"
-        onChange={handleOnChange}
-        error={error}
-        errorMessage={errorMessage}
-        id="url"
-        required
-        type="url"
-        value={url}
-      />
+      <div className="flex-1 min-w-64">
+        <Input
+          placeholder="Enter a URL to follow redirects"
+          onChange={handleOnChange}
+          id="url"
+          required
+          type="url"
+          value={url}
+          className={error ? "border-destructive" : ""}
+        />
+        {error && errorMessage && (
+          <p className="text-sm text-destructive mt-1">{errorMessage}</p>
+        )}
+      </div>
       <Button
-        className="self-end"
-        variant="primary"
+        className="self-start"
         disabled={isSubmitting}
-        loading={isSubmitting}
       >
         {isSubmitting ? "Submitting..." : "Submit"}
       </Button>

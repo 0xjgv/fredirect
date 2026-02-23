@@ -4,7 +4,7 @@ import { Redirect } from "@/lib/types";
 import { Feedback } from "@/components/Feedback";
 import SearchInput from "@/components/SearchInput";
 import TableResults from "@/components/TableResults";
-import { Card, Metric } from "@tremor/react";
+import { Card, CardContent } from "@/components/ui/card";
 import { useState } from "react";
 
 interface ErrorType {
@@ -89,21 +89,23 @@ export default function Home() {
   };
 
   return (
-    <Card className="mx-auto max-w-6xl flex flex-col gap-3 relative">
-      <Metric>
-        <b>Fredirect</b>
-      </Metric>
-      <p>URL Redirection Tracker and Threat Analyzer</p>
-      <SearchInput
-        handleOnChange={handleOnChange}
-        handleOnSubmit={handleOnSubmit}
-        url={url}
-        error={status.info.error}
-        errorMessage={status.info.message}
-        isSubmitting={status.submitting}
-      />
-      {redirects.length > 0 && <TableResults redirects={redirects} />}
-      <Feedback />
+    <Card className="mx-auto max-w-6xl">
+      <CardContent className="flex flex-col gap-3 relative pt-6">
+        <h1 className="text-3xl font-semibold tracking-tight">
+          <b>Fredirect</b>
+        </h1>
+        <p>URL Redirection Tracker and Threat Analyzer</p>
+        <SearchInput
+          handleOnChange={handleOnChange}
+          handleOnSubmit={handleOnSubmit}
+          url={url}
+          error={status.info.error}
+          errorMessage={status.info.message}
+          isSubmitting={status.submitting}
+        />
+        {redirects.length > 0 && <TableResults redirects={redirects} />}
+        <Feedback />
+      </CardContent>
     </Card>
   );
 }

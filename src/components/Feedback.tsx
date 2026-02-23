@@ -1,6 +1,13 @@
 "use client";
 
-import { Button, Dialog, DialogPanel, Metric, Textarea } from "@tremor/react";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle
+} from "@/components/ui/dialog";
+import { Textarea } from "@/components/ui/textarea";
 import { useState } from "react";
 import { submitFeedback } from "../app/actions";
 
@@ -39,13 +46,14 @@ export function Feedback() {
 
       <Dialog
         open={feedbackState.open}
-        onClose={val => setFeedbackState({ ...feedbackState, open: val })}
-        static={true}
+        onOpenChange={open => setFeedbackState({ ...feedbackState, open })}
       >
-        <DialogPanel>
-          <Metric className="text-left">
-            <b>Feedback</b>
-            </Metric>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>
+              <b>Feedback</b>
+            </DialogTitle>
+          </DialogHeader>
           <form
             onSubmit={async e => {
               e.preventDefault();
@@ -94,7 +102,7 @@ export function Feedback() {
               {feedbackState.submitting ? "Close" : "Cancel"}
             </Button>
           </form>
-        </DialogPanel>
+        </DialogContent>
       </Dialog>
     </>
   );
